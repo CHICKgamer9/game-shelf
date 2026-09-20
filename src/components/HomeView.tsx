@@ -4,12 +4,14 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { FilterBar } from "@/components/FilterBar";
 import { ItemCard } from "@/components/ItemCard";
+import { SyncBanner } from "@/components/SyncBanner";
 import { TotalsBar } from "@/components/TotalsBar";
 import { useCollection } from "@/components/CollectionProvider";
 import { DEFAULT_FILTERS, filterItems, recentItems } from "@/lib/filters";
 
 export function HomeView() {
-  const { items, totals, hydrated, deleteSamples, exportCsv } = useCollection();
+  const { items, totals, hydrated, deleteSamples, exportCsv, signedIn } =
+    useCollection();
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const visible = useMemo(() => filterItems(items, filters), [items, filters]);
   const recent = useMemo(() => recentItems(items, 4), [items]);
@@ -32,11 +34,14 @@ export function HomeView() {
         </h1>
         <p className="mt-2 max-w-xl text-sm text-[var(--muted)]">
           Guest-first tracker for Xbox One disks, consoles, and the rest of the pile.
-          Saved in this browser only — including photos.
+          {signedIn
+            ? " Signed in — items and photos sync to your account."
+            : " Guest mode stays in this browser. Sign in to sync across devices."}
         </p>
       </div>
 
       <TotalsBar totals={totals} />
+      <SyncBanner />
 
       {sampleCount > 0 ? (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-dashed border-[var(--amber)]/40 bg-[var(--panel)] px-4 py-3">

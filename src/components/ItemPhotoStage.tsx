@@ -7,7 +7,7 @@ import { usePhotoUrls } from "@/lib/use-photo-url";
 export function ItemPhotoStage({ item }: { item: CoverItem }) {
   const photoIds = item.photoIds ?? [];
   const [active, setActive] = useState(0);
-  const urls = usePhotoUrls(photoIds);
+  const urls = usePhotoUrls(photoIds, item.photoUrls ?? {});
   const safeIndex = Math.min(active, Math.max(0, photoIds.length - 1));
   const activeId = photoIds[safeIndex];
   const largeSrc = activeId ? urls[activeId] : null;

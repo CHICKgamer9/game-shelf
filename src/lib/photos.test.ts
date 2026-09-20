@@ -29,6 +29,7 @@ function item(partial: Partial<CollectionItem>): CollectionItem {
     estimatedMarketValueAud: null,
     coverArtUrl: "",
     photoIds: [],
+    photoUrls: {},
     status: "owned",
     isSample: false,
     createdAt: "2026-01-01T00:00:00.000Z",
@@ -74,6 +75,16 @@ test("normalizeItem drops non-string photo ids", () => {
     item({ photoIds: ["keep", "", 12 as unknown as string] }),
   );
   assert.deepEqual(normalized.photoIds, ["keep"]);
+});
+
+test("normalizeItem keeps remote photo URLs that still have an id", () => {
+  const normalized = normalizeItem(
+    item({
+      photoIds: ["keep"],
+      photoUrls: { keep: " https://blob.example/keep ", drop: "https://blob.example/drop" },
+    }),
+  );
+  assert.deepEqual(normalized.photoUrls, { keep: "https://blob.example/keep" });
 });
 
 test("pending photos can be stashed, previewed, and taken", () => {

@@ -22,6 +22,7 @@ import {
 } from "@/lib/types";
 import { suggestPlaceholderAud } from "@/lib/estimates";
 import { formatAudEstimate } from "@/lib/format";
+import { pickPhotoUrls } from "@/lib/photo-urls";
 
 export const EMPTY_DRAFT: ItemDraft = {
   title: "",
@@ -39,6 +40,7 @@ export const EMPTY_DRAFT: ItemDraft = {
   estimatedMarketValueAud: null,
   coverArtUrl: "",
   photoIds: [],
+  photoUrls: {},
   status: "owned",
 };
 
@@ -59,6 +61,7 @@ export function draftFromItem(item: CollectionItem): ItemDraft {
     estimatedMarketValueAud: item.estimatedMarketValueAud,
     coverArtUrl: item.coverArtUrl,
     photoIds: item.photoIds ?? [],
+    photoUrls: item.photoUrls ?? {},
     status: item.status,
   };
 }
@@ -118,7 +121,13 @@ export function ItemForm({
 
       <PhotoPicker
         photoIds={draft.photoIds ?? []}
-        onChange={(photoIds) => set({ photoIds })}
+        remoteUrls={draft.photoUrls ?? {}}
+        onChange={(photoIds) =>
+          set({
+            photoIds,
+            photoUrls: pickPhotoUrls(draft.photoUrls, photoIds),
+          })
+        }
         disabled={busy}
       />
 

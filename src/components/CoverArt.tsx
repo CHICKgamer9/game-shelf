@@ -19,7 +19,9 @@ const PLATFORM_TONE: Record<Platform, string> = {
 export type CoverItem = Pick<
   CollectionItem,
   "title" | "coverArtUrl" | "platform" | "itemKind" | "photoIds"
->;
+> & {
+  photoUrls?: Record<string, string>;
+};
 
 export function CoverArt({
   item,
@@ -32,7 +34,12 @@ export function CoverArt({
     photoIds: item.photoIds ?? [],
     coverArtUrl: item.coverArtUrl ?? "",
   });
-  const photoUrl = usePhotoUrl(face.type === "photo" ? face.id : undefined);
+  const remote =
+    face.type === "photo" ? item.photoUrls?.[face.id] : undefined;
+  const photoUrl = usePhotoUrl(
+    face.type === "photo" ? face.id : undefined,
+    remote,
+  );
   const src = face.type === "photo" ? photoUrl : face.type === "url" ? face.url : null;
 
   if (face.type === "photo" && !src) {

@@ -3,7 +3,10 @@
 import { useEffect, useState } from "react";
 import { getPendingPhoto, getPhoto, isPendingPhotoId } from "./photos";
 
-export function usePhotoUrl(photoId: string | undefined): string | null {
+export function usePhotoUrl(
+  photoId: string | undefined,
+  remoteUrl?: string,
+): string | null {
   const pendingUrl = photoId ? (getPendingPhoto(photoId)?.previewUrl ?? null) : null;
   const [resolved, setResolved] = useState<{ id: string; url: string } | null>(null);
 
@@ -38,10 +41,14 @@ export function usePhotoUrl(photoId: string | undefined): string | null {
 
   if (pendingUrl) return pendingUrl;
   if (resolved && resolved.id === photoId) return resolved.url;
+  if (remoteUrl) return remoteUrl;
   return null;
 }
 
-export function usePhotoUrls(photoIds: string[]): Record<string, string> {
+export function usePhotoUrls(
+  photoIds: string[],
+  remoteUrls: Record<string, string> = {},
+): Record<string, string> {
   const [stored, setStored] = useState<Record<string, string>>({});
   const key = photoIds.join("|");
 
@@ -88,6 +95,7 @@ export function usePhotoUrls(photoIds: string[]): Record<string, string> {
     const pending = getPendingPhoto(id);
     if (pending) urls[id] = pending.previewUrl;
     else if (stored[id]) urls[id] = stored[id];
+    else if (remoteUrls[id]) urls[id] = remoteUrls[id];
   }
   return urls;
 }

@@ -137,6 +137,28 @@ export async function getPhoto(id: string): Promise<StoredPhoto | null> {
   }
 }
 
+export async function cacheRemotePhoto(
+  id: string,
+  url: string,
+): Promise<StoredPhoto | null> {
+  if (!id || !url || isPendingPhotoId(id)) return null;
+  const existing = await getPhoto(id);
+  if (existing) return existing;
+  const response = await fetch(url);
+  if (!response.ok) return null;
+  const blob = await response.blob();
+  if (blob.size === 0) return null;
+  const photo: StoredPhoto = {
+    id,
+    blob,
+    mimeType: blob.type || "image/jpeg",
+    width: 0,
+    height: 0,
+  };
+  await putPhoto(photo);
+  return photo;
+}
+
 export async function deletePhotos(ids: string[]): Promise<void> {
   const persisted = ids.filter((id) => id && !isPendingPhotoId(id));
   if (persisted.length === 0) return;

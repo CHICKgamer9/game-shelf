@@ -56,7 +56,8 @@ export function FastAddView() {
       </h1>
       <p className="mt-2 text-sm text-[var(--muted)]">
         Defaults are Xbox One, physical disk, CIB. Add a photo from your camera
-        roll if you have one — it stays in this browser.
+        roll if you have one. Guest photos stay on this device; they upload after
+        you sign in.
       </p>
 
       {flash ? (
