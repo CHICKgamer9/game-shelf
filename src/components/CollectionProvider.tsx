@@ -51,8 +51,10 @@ function snapshot(): CollectionItem[] {
   return getCollectionSnapshot();
 }
 
+const EMPTY_ITEMS: CollectionItem[] = [];
+
 function serverSnapshot(): CollectionItem[] {
-  return [];
+  return EMPTY_ITEMS;
 }
 
 function clientTrue() {

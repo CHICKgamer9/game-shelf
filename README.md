@@ -2,7 +2,16 @@
 
 Track video game disks, consoles, and accessories. Approximate collection value in **AUD**. Guest-first: everything stays in this browser (`localStorage`). No account required.
 
+## Live
+
+**https://game-shelf-five.vercel.app**
+
 Repo: https://github.com/CHICKgamer9/game-shelf
+
+Vercel project: `game-shelf` on team `chickgamer9com-9658s-projects`, production branch `main`. Pushes to `main` auto-deploy.
+
+If a dashboard alias asks you to log in with Vercel, use the `*.vercel.app` production URL above — that one is public.
+
 
 ## Run locally
 
@@ -44,6 +53,6 @@ Export **CSV** from the header (desktop) or Browse section (mobile) for a spread
 
 ## Deploy
 
-This app is meant to ship on **Vercel** from the `main` branch of this GitHub repo. If the project is already linked, a push to `main` auto-deploys.
+Already live on Vercel at **https://game-shelf-five.vercel.app** from `main`. Further pushes to `main` auto-deploy.
 
-If you still need to connect it: Vercel Dashboard → Add New → Project → import `CHICKgamer9/game-shelf` → Framework Preset **Next.js** → Deploy.
+To reconnect or deploy from scratch: Vercel Dashboard → Add New → Project → import `CHICKgamer9/game-shelf` → Framework Preset **Next.js** → Deploy.
