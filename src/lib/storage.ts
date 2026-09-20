@@ -12,13 +12,24 @@ function isItem(value: unknown): value is CollectionItem {
   return typeof item.id === "string" && typeof item.title === "string";
 }
 
+export function normalizeItem(item: CollectionItem): CollectionItem {
+  const photoIds = Array.isArray(item.photoIds)
+    ? item.photoIds.filter((id): id is string => typeof id === "string" && id.length > 0)
+    : [];
+  return {
+    ...item,
+    photoIds,
+    coverArtUrl: typeof item.coverArtUrl === "string" ? item.coverArtUrl : "",
+  };
+}
+
 function readFromStorage(): CollectionItem[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed: unknown = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed.filter(isItem);
+      if (Array.isArray(parsed)) return parsed.filter(isItem).map(normalizeItem);
     }
     const alreadySeeded = window.localStorage.getItem(SEEDED_KEY) === "1";
     if (alreadySeeded) return [];

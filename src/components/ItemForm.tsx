@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { PhotoPicker } from "@/components/PhotoPicker";
 import {
   CONDITIONS,
   CONDITION_LABELS,
@@ -37,6 +38,7 @@ export const EMPTY_DRAFT: ItemDraft = {
   itemKind: "game",
   estimatedMarketValueAud: null,
   coverArtUrl: "",
+  photoIds: [],
   status: "owned",
 };
 
@@ -56,6 +58,7 @@ export function draftFromItem(item: CollectionItem): ItemDraft {
     itemKind: item.itemKind,
     estimatedMarketValueAud: item.estimatedMarketValueAud,
     coverArtUrl: item.coverArtUrl,
+    photoIds: item.photoIds ?? [],
     status: item.status,
   };
 }
@@ -79,6 +82,7 @@ export function ItemForm({
   submitLabel,
   compact = false,
   extraActions,
+  busy = false,
 }: {
   draft: ItemDraft;
   onChange: (draft: ItemDraft) => void;
@@ -86,6 +90,7 @@ export function ItemForm({
   submitLabel: string;
   compact?: boolean;
   extraActions?: ReactNode;
+  busy?: boolean;
 }) {
   const suggested = suggestPlaceholderAud(draft);
   const set = (patch: Partial<ItemDraft>) => onChange({ ...draft, ...patch });
@@ -95,6 +100,7 @@ export function ItemForm({
       className="flex flex-col gap-4"
       onSubmit={(event) => {
         event.preventDefault();
+        if (busy) return;
         onSubmit();
       }}
     >
@@ -238,6 +244,12 @@ export function ItemForm({
         />
       </Field>
 
+      <PhotoPicker
+        photoIds={draft.photoIds ?? []}
+        onChange={(photoIds) => set({ photoIds })}
+        disabled={busy}
+      />
+
       {!compact ? (
         <>
           <div className="grid grid-cols-2 gap-3">
@@ -273,7 +285,11 @@ export function ItemForm({
               onChange={(e) => set({ edition: e.target.value })}
             />
           </Field>
-          <Field label="Cover art URL" htmlFor="cover">
+          <Field
+            label="Cover art URL"
+            htmlFor="cover"
+            hint="Optional fallback when this item has no photos."
+          >
             <input
               id="cover"
               type="url"
@@ -296,7 +312,7 @@ export function ItemForm({
       ) : null}
 
       <div className="flex flex-wrap items-center gap-2 pt-1">
-        <button type="submit" className="btn-primary">
+        <button type="submit" className="btn-primary" disabled={busy}>
           {submitLabel}
         </button>
         {extraActions}

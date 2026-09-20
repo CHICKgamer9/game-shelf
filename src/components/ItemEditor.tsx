@@ -4,10 +4,11 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useCollection } from "@/components/CollectionProvider";
-import { CoverArt } from "@/components/CoverArt";
 import { draftFromItem, ItemForm } from "@/components/ItemForm";
+import { ItemPhotoStage } from "@/components/ItemPhotoStage";
 import { resolveItemValue } from "@/lib/estimates";
 import { formatAudEstimate } from "@/lib/format";
+import { commitDraftPhotos } from "@/lib/photos";
 import type { ItemDraft } from "@/lib/types";
 
 export function ItemEditor() {
@@ -17,6 +18,8 @@ export function ItemEditor() {
   const item = items.find((entry) => entry.id === id);
   const [draft, setDraft] = useState<ItemDraft | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const activeDraft = useMemo(() => {
     if (draft) return draft;
@@ -54,11 +57,9 @@ export function ItemEditor() {
       <Link href="/" className="text-sm text-[var(--muted)] underline-offset-2 hover:underline">
         ← Shelf
       </Link>
-      <div className="mt-4 flex gap-4">
-        <div className="h-28 w-20 overflow-hidden rounded-sm shadow-lg">
-          <CoverArt item={preview} />
-        </div>
-        <div>
+      <div className="mt-4">
+        <ItemPhotoStage item={preview} />
+        <div className="mt-4">
           <h1 className="font-[family-name:var(--font-display)] text-3xl leading-tight tracking-tight">
             {item.title}
           </h1>
@@ -75,19 +76,47 @@ export function ItemEditor() {
       </div>
 
       <div className="mt-8">
+        {error ? (
+          <p className="mb-4 rounded-md border border-[var(--loss)]/40 bg-[var(--panel)] px-3 py-2 text-sm text-[var(--loss)]">
+            {error}
+          </p>
+        ) : null}
         <ItemForm
           draft={activeDraft}
-          onChange={setDraft}
-          onSubmit={() => {
-            updateItem(item.id, {
-              ...activeDraft,
-              title: activeDraft.title.trim(),
-              purchaseDate: activeDraft.purchaseDate || null,
-              isSample: false,
-            });
-            router.push("/");
+          onChange={(next) => {
+            setDraft(next);
+            setError(null);
           }}
-          submitLabel="Save changes"
+          busy={saving}
+          onSubmit={() => {
+            if (saving) return;
+            setSaving(true);
+            setError(null);
+            void (async () => {
+              try {
+                const photoIds = await commitDraftPhotos(
+                  activeDraft.photoIds ?? [],
+                  item.photoIds ?? [],
+                );
+                updateItem(item.id, {
+                  ...activeDraft,
+                  photoIds,
+                  title: activeDraft.title.trim(),
+                  purchaseDate: activeDraft.purchaseDate || null,
+                  isSample: false,
+                });
+                router.push("/");
+              } catch (err) {
+                setSaving(false);
+                setError(
+                  err instanceof Error
+                    ? err.message
+                    : "Could not save photos in this browser.",
+                );
+              }
+            })();
+          }}
+          submitLabel={saving ? "Saving…" : "Save changes"}
           extraActions={
             confirmDelete ? (
               <span className="flex flex-wrap items-center gap-2 text-sm">

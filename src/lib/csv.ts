@@ -31,6 +31,7 @@ export function collectionToCsv(items: CollectionItem[]): string {
     "region",
     "edition",
     "coverArtUrl",
+    "photoCount",
     "notes",
     "isSample",
   ];
@@ -52,6 +53,7 @@ export function collectionToCsv(items: CollectionItem[]): string {
       item.region,
       item.edition,
       item.coverArtUrl,
+      item.photoIds?.length ?? 0,
       item.notes,
       item.isSample ? "sample" : "",
     ]

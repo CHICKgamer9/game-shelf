@@ -48,7 +48,10 @@ export interface CollectionItem {
   itemKind: ItemKind;
   /** Manual market-value override in whole AUD. Null = use placeholder estimate. */
   estimatedMarketValueAud: number | null;
+  /** Optional remote cover; used when the item has no local photos. */
   coverArtUrl: string;
+  /** Ordered local photo IDs (IndexedDB blobs). First ID is the shelf card face. */
+  photoIds: string[];
   status: Status;
   isSample: boolean;
   createdAt: string;

@@ -20,6 +20,11 @@ export function ItemCard({ item }: { item: CollectionItem }) {
             Sample
           </span>
         ) : null}
+        {(item.photoIds?.length ?? 0) > 0 ? (
+          <span className="absolute right-1 top-1 rounded bg-black/70 px-1 py-0.5 text-[9px] font-semibold tabular-nums text-white">
+            {item.photoIds.length}
+          </span>
+        ) : null}
       </div>
       <div className="min-w-0 flex-1 py-0.5">
         <div className="flex items-start justify-between gap-2">
