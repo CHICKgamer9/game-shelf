@@ -35,6 +35,15 @@ export function CoverArt({
   const photoUrl = usePhotoUrl(face.type === "photo" ? face.id : undefined);
   const src = face.type === "photo" ? photoUrl : face.type === "url" ? face.url : null;
 
+  if (face.type === "photo" && !src) {
+    return (
+      <div
+        className={`h-full w-full animate-pulse bg-[var(--panel-2)] ${className}`}
+        aria-hidden="true"
+      />
+    );
+  }
+
   if (src) {
     return (
       // User-supplied URL or local blob; regular img avoids remote-pattern config.

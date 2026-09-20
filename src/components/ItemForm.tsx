@@ -116,6 +116,12 @@ export function ItemForm({
         />
       </Field>
 
+      <PhotoPicker
+        photoIds={draft.photoIds ?? []}
+        onChange={(photoIds) => set({ photoIds })}
+        disabled={busy}
+      />
+
       <div className="grid grid-cols-2 gap-3">
         <Field label="Kind" htmlFor="kind">
           <select
@@ -243,12 +249,6 @@ export function ItemForm({
           }
         />
       </Field>
-
-      <PhotoPicker
-        photoIds={draft.photoIds ?? []}
-        onChange={(photoIds) => set({ photoIds })}
-        disabled={busy}
-      />
 
       {!compact ? (
         <>
