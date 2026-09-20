@@ -32,7 +32,7 @@ export function HomeView() {
         </h1>
         <p className="mt-2 max-w-xl text-sm text-[var(--muted)]">
           Guest-first tracker for Xbox One disks, consoles, and the rest of the pile.
-          Saved in this browser only.
+          Saved in this browser only — including photos.
         </p>
       </div>
 
@@ -99,7 +99,7 @@ function EmptyState({ hasItems }: { hasItems: boolean }) {
       <p className="mx-auto mt-2 max-w-sm text-sm text-[var(--muted)]">
         {hasItems
           ? "Clear filters or try another title."
-          : "Start with an Xbox One disk: title, condition, and what you paid."}
+          : "Start with an Xbox One disk: title, a photo, condition, and what you paid."}
       </p>
       {!hasItems ? (
         <Link href="/add" className="btn-primary mt-5 inline-flex">

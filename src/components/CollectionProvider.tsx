@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { downloadCsv } from "@/lib/csv";
+import { deletePhotos } from "@/lib/photos";
 import {
   getCollectionSnapshot,
   invalidateCollectionCache,
@@ -107,11 +108,20 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const deleteItem = useCallback((id: string) => {
-    save(getCollectionSnapshot().filter((item) => item.id !== id));
+    const current = getCollectionSnapshot();
+    const target = current.find((item) => item.id === id);
+    save(current.filter((item) => item.id !== id));
+    const photoIds = target?.photoIds ?? [];
+    if (photoIds.length > 0) void deletePhotos(photoIds);
   }, []);
 
   const deleteSamples = useCallback(() => {
-    save(getCollectionSnapshot().filter((item) => !item.isSample));
+    const current = getCollectionSnapshot();
+    const removedIds = current
+      .filter((item) => item.isSample)
+      .flatMap((item) => item.photoIds ?? []);
+    save(current.filter((item) => !item.isSample));
+    if (removedIds.length > 0) void deletePhotos(removedIds);
   }, []);
 
   const exportCsv = useCallback(() => {

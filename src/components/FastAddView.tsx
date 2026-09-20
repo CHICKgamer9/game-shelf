@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useCollection } from "@/components/CollectionProvider";
 import { EMPTY_DRAFT, ItemForm } from "@/components/ItemForm";
+import { commitDraftPhotos } from "@/lib/photos";
 import type { ItemDraft } from "@/lib/types";
 
 export function FastAddView() {
@@ -13,22 +14,38 @@ export function FastAddView() {
   const [draft, setDraft] = useState<ItemDraft>({ ...EMPTY_DRAFT });
   const [more, setMore] = useState(false);
   const [flash, setFlash] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function save(andAnother: boolean) {
+  async function save(andAnother: boolean) {
     const title = draft.title.trim();
-    if (!title) return;
-    addItem({
-      ...draft,
-      title,
-      purchaseDate: draft.purchaseDate || null,
-      isSample: false,
-    });
-    if (andAnother) {
-      setDraft({ ...EMPTY_DRAFT });
-      setFlash(`Saved ${title}. Add the next disk.`);
-      return;
+    if (!title || saving) return;
+    setSaving(true);
+    setError(null);
+    try {
+      const photoIds = await commitDraftPhotos(draft.photoIds ?? [], []);
+      addItem({
+        ...draft,
+        photoIds,
+        title,
+        purchaseDate: draft.purchaseDate || null,
+        isSample: false,
+      });
+      if (andAnother) {
+        setDraft({ ...EMPTY_DRAFT, photoIds: [] });
+        setFlash(`Saved ${title}. Add the next disk.`);
+        setSaving(false);
+        return;
+      }
+      router.push("/");
+    } catch (err) {
+      setSaving(false);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Could not save photos in this browser.",
+      );
     }
-    router.push("/");
   }
 
   return (
@@ -38,12 +55,18 @@ export function FastAddView() {
         Log an Xbox One disk
       </h1>
       <p className="mt-2 text-sm text-[var(--muted)]">
-        Defaults are Xbox One, physical disk, CIB. Change anything that doesn’t fit.
+        Defaults are Xbox One, physical disk, CIB. Add a photo from your camera
+        roll if you have one — it stays in this browser.
       </p>
 
       {flash ? (
         <p className="mt-4 rounded-md border border-[var(--xbox)]/40 bg-[var(--panel)] px-3 py-2 text-sm">
           {flash}
+        </p>
+      ) : null}
+      {error ? (
+        <p className="mt-4 rounded-md border border-[var(--loss)]/40 bg-[var(--panel)] px-3 py-2 text-sm text-[var(--loss)]">
+          {error}
         </p>
       ) : null}
 
@@ -53,13 +76,20 @@ export function FastAddView() {
           onChange={(next) => {
             setDraft(next);
             setFlash(null);
+            setError(null);
           }}
-          onSubmit={() => save(false)}
-          submitLabel="Save to shelf"
+          onSubmit={() => void save(false)}
+          submitLabel={saving ? "Saving…" : "Save to shelf"}
           compact={!more}
+          busy={saving}
           extraActions={
             <>
-              <button type="button" className="btn-ghost" onClick={() => save(true)}>
+              <button
+                type="button"
+                className="btn-ghost"
+                disabled={saving}
+                onClick={() => void save(true)}
+              >
                 Save & add another
               </button>
               <button

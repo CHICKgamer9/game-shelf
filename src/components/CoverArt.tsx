@@ -1,4 +1,8 @@
+"use client";
+
+import { cardFaceSource } from "@/lib/cover-source";
 import { initials } from "@/lib/format";
+import { usePhotoUrl } from "@/lib/use-photo-url";
 import type { CollectionItem, Platform } from "@/lib/types";
 
 const PLATFORM_TONE: Record<Platform, string> = {
@@ -12,19 +16,40 @@ const PLATFORM_TONE: Record<Platform, string> = {
   other: "from-amber-800 to-stone-950",
 };
 
+export type CoverItem = Pick<
+  CollectionItem,
+  "title" | "coverArtUrl" | "platform" | "itemKind" | "photoIds"
+>;
+
 export function CoverArt({
   item,
   className = "",
 }: {
-  item: Pick<CollectionItem, "title" | "coverArtUrl" | "platform" | "itemKind">;
+  item: CoverItem;
   className?: string;
 }) {
-  if (item.coverArtUrl.trim()) {
+  const face = cardFaceSource({
+    photoIds: item.photoIds ?? [],
+    coverArtUrl: item.coverArtUrl ?? "",
+  });
+  const photoUrl = usePhotoUrl(face.type === "photo" ? face.id : undefined);
+  const src = face.type === "photo" ? photoUrl : face.type === "url" ? face.url : null;
+
+  if (face.type === "photo" && !src) {
     return (
-      // User-supplied URL; regular img avoids remote-pattern config.
+      <div
+        className={`h-full w-full animate-pulse bg-[var(--panel-2)] ${className}`}
+        aria-hidden="true"
+      />
+    );
+  }
+
+  if (src) {
+    return (
+      // User-supplied URL or local blob; regular img avoids remote-pattern config.
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={item.coverArtUrl.trim()}
+        src={src}
         alt=""
         className={`h-full w-full object-cover ${className}`}
       />

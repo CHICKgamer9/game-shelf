@@ -80,8 +80,10 @@ body {
   padding: 0.6rem 1.1rem;
 }
 
-.btn-primary:hover {
-  filter: brightness(1.08);
+.btn-primary:disabled,
+.btn-ghost:disabled {
+  opacity: 0.45;
+  pointer-events: none;
 }
 
 .btn-ghost {
