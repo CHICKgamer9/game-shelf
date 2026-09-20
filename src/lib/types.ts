@@ -52,6 +52,8 @@ export interface CollectionItem {
   coverArtUrl: string;
   /** Ordered local photo IDs (IndexedDB blobs). First ID is the shelf card face. */
   photoIds: string[];
+  /** Remote Vercel Blob URLs keyed by photo ID. Used after sign-in so other devices can load the same photos. */
+  photoUrls: Record<string, string>;
   status: Status;
   isSample: boolean;
   createdAt: string;

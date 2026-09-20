@@ -1,3 +1,4 @@
+import { normalizePhotoUrls, pickPhotoUrls } from "./photo-urls";
 import { SAMPLE_ITEMS } from "./seeds";
 import type { CollectionItem } from "./types";
 
@@ -19,6 +20,7 @@ export function normalizeItem(item: CollectionItem): CollectionItem {
   return {
     ...item,
     photoIds,
+    photoUrls: pickPhotoUrls(normalizePhotoUrls(item.photoUrls), photoIds),
     coverArtUrl: typeof item.coverArtUrl === "string" ? item.coverArtUrl : "",
   };
 }

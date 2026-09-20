@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AuthControls } from "@/components/AuthControls";
 import { useCollection } from "@/components/CollectionProvider";
 
 export function AppHeader() {
@@ -25,11 +26,12 @@ export function AppHeader() {
           </span>
         </Link>
         <nav className="ml-auto flex items-center gap-2">
+          <AuthControls />
           <button
             type="button"
             onClick={exportCsv}
             disabled={items.length === 0}
-            className="hidden rounded-full border border-[var(--line)] px-3 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-[var(--amber)] hover:text-[var(--text)] disabled:opacity-40 sm:inline"
+            className="hidden rounded-full border border-[var(--line)] px-3 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-[var(--amber)] hover:text-[var(--text)] disabled:opacity-40 md:inline"
           >
             Export CSV
           </button>

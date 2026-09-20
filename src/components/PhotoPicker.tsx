@@ -17,17 +17,19 @@ export function PhotoPicker({
   photoIds,
   onChange,
   disabled = false,
+  remoteUrls = {},
 }: {
   photoIds: string[];
   onChange: (photoIds: string[]) => void;
   disabled?: boolean;
+  remoteUrls?: Record<string, string>;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const replaceRef = useRef<HTMLInputElement>(null);
   const replaceIndex = useRef<number | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const urls = usePhotoUrls(photoIds);
+  const urls = usePhotoUrls(photoIds, remoteUrls);
   const remaining = PHOTO_MAX_PER_ITEM - photoIds.length;
 
   async function ingestFiles(files: FileList | File[], mode: "append" | "replace") {
@@ -197,9 +199,9 @@ export function PhotoPicker({
       </button>
 
       <p className="mt-2 text-xs text-[var(--muted)]">
-        Stays in this browser (IndexedDB). Resized to {PHOTO_MAX_DIMENSION}px JPEG/WebP,
-        max {PHOTO_MAX_PER_ITEM} per item. First photo is the shelf card — cover URL is a
-        fallback.
+        Compressed to {PHOTO_MAX_DIMENSION}px JPEG/WebP, max {PHOTO_MAX_PER_ITEM} per
+        item. Guest copies stay in IndexedDB; after sign-in they upload to your
+        account. First photo is the shelf card — cover URL is a fallback.
       </p>
       {message ? <p className="mt-1 text-xs text-[var(--amber)]">{message}</p> : null}
     </div>
