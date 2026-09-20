@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #0c0e12;
+  --panel: #161a22;
+  --panel-2: #1c2230;
+  --line: #2b3344;
+  --text: #ece8df;
+  --muted: #9aa3b4;
+  --amber: #d4a574;
+  --xbox: #7cde4e;
+  --gain: #8ad4a6;
+  --loss: #e39292;
+  --background: var(--ink);
+  --foreground: var(--text);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-figtree);
+  --font-display: var(--font-fraunces);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background:
+    radial-gradient(1200px 500px at 10% -10%, rgba(212, 165, 116, 0.08), transparent 50%),
+    radial-gradient(900px 400px at 100% 0%, rgba(124, 222, 78, 0.06), transparent 45%),
+    var(--ink);
+  color: var(--text);
+  font-family: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+}
+
+.shelf-panel {
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, var(--panel) 92%, transparent);
+}
+
+.shelf-card {
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--panel);
+  box-shadow: inset 3px 0 0 var(--amber);
+  transition: border-color 120ms ease, transform 120ms ease;
+}
+
+.shelf-card:hover {
+  border-color: color-mix(in srgb, var(--amber) 55%, var(--line));
+  transform: translateY(-1px);
+}
+
+.input {
+  width: 100%;
+  border-radius: 0.55rem;
+  border: 1px solid var(--line);
+  background: var(--ink);
+  color: var(--text);
+  padding: 0.65rem 0.75rem;
+  font-size: 1rem;
+}
+
+.input:focus {
+  outline: 2px solid color-mix(in srgb, var(--amber) 70%, transparent);
+  outline-offset: 1px;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--amber);
+  color: var(--ink);
+  font-weight: 650;
+  padding: 0.6rem 1.1rem;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.08);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  padding: 0.55rem 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-ghost:hover {
+  border-color: var(--amber);
+}
+
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--loss);
+  color: var(--ink);
+  font-weight: 650;
+  padding: 0.5rem 0.95rem;
+  font-size: 0.9rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
