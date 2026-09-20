@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useCollection } from "@/components/CollectionProvider";
 
 export function SyncBanner() {
-  const { clerkEnabled, signedIn, hasKeepableData, syncStatus, syncError, retrySync } =
+  const { signedIn, hasKeepableData, syncStatus, syncError, retrySync } =
     useCollection();
 
   if (signedIn && syncStatus === "error") {
@@ -20,7 +20,7 @@ export function SyncBanner() {
     );
   }
 
-  if (!clerkEnabled || signedIn || !hasKeepableData) return null;
+  if (signedIn || !hasKeepableData) return null;
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[var(--xbox)]/30 bg-[var(--panel)] px-4 py-3">

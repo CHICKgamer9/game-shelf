@@ -7,7 +7,19 @@ import { isClerkConfigured } from "@/lib/config";
 import { useCollection } from "@/components/CollectionProvider";
 
 export function AuthControls() {
-  if (!isClerkConfigured()) return <LocalOnlyBadge />;
+  if (!isClerkConfigured()) {
+    return (
+      <span className="flex items-center gap-2">
+        <LocalOnlyBadge />
+        <Link
+          href="/sign-in"
+          className="rounded-full border border-[var(--line)] px-3 py-1.5 text-xs font-medium text-[var(--text)] hover:border-[var(--amber)]"
+        >
+          Sign in
+        </Link>
+      </span>
+    );
+  }
   return <ClerkAuthControls />;
 }
 
@@ -76,7 +88,7 @@ function StatusPill({
 }) {
   return (
     <span
-      className={`hidden rounded-full border px-2.5 py-1 text-[11px] uppercase tracking-[0.12em] sm:inline ${
+      className={`rounded-full border px-2.5 py-1 text-[11px] uppercase tracking-[0.12em] ${
         tone === "live"
           ? "border-[var(--xbox)]/40 text-[var(--xbox)]"
           : "border-[var(--line)] text-[var(--muted)]"
